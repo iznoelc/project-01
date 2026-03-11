@@ -8,6 +8,7 @@ import LoginPage from "../components/LoginPage";
 import MessagesPage from "../components/MessagesPage";
 import WeatherPage from "../components/WeatherPage";
 import ToDoPage from "../components/ToDoPage";
+import ForgotPasswordPage from "../components/ForgotPasswordPage";
 
 
 const MainRouter = [
@@ -24,6 +25,7 @@ const MainRouter = [
       { path: "messages", Component: MessagesPage },
       { path: "weather", Component: WeatherPage },
       { path: "todo", Component: ToDoPage },
+      { path: "forgotpassword", Component: ForgotPasswordPage},
     ],
   },
 ];

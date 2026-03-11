@@ -11,6 +11,7 @@ export default function Home(){
                 <br />I will make this look good later.</h1>
             <button class="btn btn-outline btn-primary" onClick={() => navigate("/signup")}>Sign up</button>
             <button class="btn btn-outline btn-primary" onClick={() => navigate("/login")}>Login</button>
+            <button class="btn btn-outline btn-primary" onClick={() => navigate("/forgotpassword")}>Forgot Password</button>
             <button class="btn btn-outline btn-primary" onClick={() => navigate("/messages")}>Messages</button>
             <button class="btn btn-outline btn-primary" onClick={() => navigate("/weather")}>Weather</button>
             <button class="btn btn-outline btn-primary" onClick={() => navigate("/todo")}>To-Do</button>
