@@ -162,7 +162,7 @@ function LoginPage(){
                         </g>
                     </svg>
                     <input
-                        type={passwordVisibility ? "password" : "text"}
+                        type={passwordVisibility ? "text" : "password"}
                         id="password"
                         name="password"
                         value={formData.password}
@@ -172,7 +172,7 @@ function LoginPage(){
                         onChange={handleChange}
                     />
                     <i className="hover: cursor-pointer" onClick={() => setPasswordVisibility(!passwordVisibility)}>
-                        {passwordVisibility ? <FaEyeSlash /> : <FaEye />}
+                        {passwordVisibility ? <FaEye /> : <FaEyeSlash />}
                     </i>
                 </label>
                 <p className="text-right hover:cursor-pointer hover:text-secondary" onClick={() => navigate("/forgotpassword")}>Forgot Password?</p>

@@ -206,7 +206,7 @@ function SignUpPage(){
                         </g>
                     </svg>
                     <input
-                        type={passwordVisibility ? "password" : "text"}
+                        type={passwordVisibility ? "text" : "password"}
                         id="password"
                         name="password"
                         value={formData.password}
@@ -218,7 +218,7 @@ function SignUpPage(){
                         onChange={handleChange}
                     />
                     <i className="hover: cursor-pointer" onClick={() => setPasswordVisibility(!passwordVisibility)}>
-                        {passwordVisibility ? <FaEyeSlash /> : <FaEye />}
+                        {passwordVisibility ? <FaEye /> : <FaEyeSlash />}
                     </i>
                 </label>
                 <p className="validator-hint hidden">

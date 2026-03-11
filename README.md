@@ -12,3 +12,4 @@ will be here
 - https://firebase.google.com/docs/web/learn-more#config-object
 - https://firebase.google.com/docs/web/setup
 - https://firebase.google.com/docs/auth/web/start?authuser=0 
+- https://firebase.google.com/docs/auth/web/manage-users
