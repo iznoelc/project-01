@@ -8,10 +8,10 @@ import { ToastContainer, Zoom } from 'react-toastify';
 const Root = () => {
   return (
     <>
-      <div className="w-full h-screen">
+      <div className="h-screen flex flex-col overflow-hidden">
         <NavBar />
         
-        <div className="min-h-[70vh] p-10 m-10">
+        <div className="flex-1 overflow-hidden">
           <ToastContainer
             position="top-center"
             autoClose={5000}

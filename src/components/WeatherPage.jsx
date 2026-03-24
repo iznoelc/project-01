@@ -49,6 +49,7 @@ export default function WeatherPage(){
 
     return (
         <>
+        <div className="p-10">
             <label className="input">
                 <input ref={inputRef} type="search" required placeholder="Search" />
                 <svg onClick={()=>{search(inputRef.current.value, setWeatherData)}} className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -76,6 +77,7 @@ export default function WeatherPage(){
                 <p>{weatherData.windSpeed} km/h</p>
                 </>
             )}
+            </div>
         </>
     );
 }

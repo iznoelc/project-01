@@ -43,6 +43,7 @@ export default function ToDoPage() {
 
   return (
     <>
+    <div className="p-10">
       <h1>To-Do</h1>
 
       <input
@@ -100,6 +101,7 @@ export default function ToDoPage() {
           </li>
         ))}
       </ul>
+      </div>
     </>
   );
 }
