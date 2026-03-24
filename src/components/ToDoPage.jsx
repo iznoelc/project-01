@@ -14,7 +14,9 @@ export default function ToDoPage() {
   const [formData, setFormData] = useState({
     task: "",
     date: "", // datetime-local format: "YYYY-MM-DDTHH:MM"
+    selectedDay: ""
   });
+
 
   const handleChange = (event) => {
     // here, name is the name of the field (i.e. email)
@@ -37,13 +39,17 @@ export default function ToDoPage() {
     // This form is updated by addTask whenever the add task button is pressed
     setTasksList((prev) => [...prev, { task: task.trim(), date }]);
 
-    // Clear the inputs
-    setFormData({ task: "", date: "" });
-  };
+    // Clear the inputs, except the selected day
+    setFormData(prev => ({
+      ...prev,
+      task: "",
+      date: ""
+    }));
+
+      };
 
   return (
     <>
-    <div className="p-10">
       <h1>To-Do</h1>
 
       <input
@@ -81,8 +87,18 @@ export default function ToDoPage() {
         Add Task
       </button>
 
-      <calendar-date className="cally bg-base-100 border border-base-300 shadow-lg rounded-box">
-        <h1>test</h1>
+      <calendar-date className="cally bg-base-100 border border-base-300 shadow-lg rounded-box"
+          name="selectedDay"
+          
+          value={formData.selectedDay}
+          onChange={(e) => {
+              setFormData(prev => ({
+                ...prev,
+                selectedDay: e.target.value   // ALWAYS "YYYY-MM-DD"
+                
+              }));
+            }}
+          >
         <svg aria-label="Previous" className="fill-current size-4" slot="previous" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path></svg>
         <svg aria-label="Next" className="fill-current size-4" slot="next" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>
         <calendar-month></calendar-month>
@@ -92,16 +108,18 @@ export default function ToDoPage() {
 
       <ul className="mt-2">
         {tasksList.length === 0 && <li>No tasks yet.</li>}
-        {tasksList.map((t, idx) => (
+        {tasksList.filter(task =>
+            task.date.slice(0, 10) === formData.selectedDay
+          )
+          .map((t, idx) => (
           <li key={idx} className="py-1">
             <span className="font-medium">{t.task}</span>{" "}
             <span className="opacity-70">
-              — {new Date(t.date).toLocaleString()}
+              — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)}
             </span>
           </li>
         ))}
       </ul>
-      </div>
     </>
   );
 }
