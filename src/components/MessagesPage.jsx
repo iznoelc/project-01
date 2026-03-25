@@ -104,7 +104,7 @@ export default function MessagesPage(){
 
     return (
     <> 
-    <div className="h-full flex">
+    <div className="flex-1 flex overflow-hidden">
     {/* side bar */}
     <div className="w-96 border-r bg-gray-50 flex flex-col p-4 gap-4">
         <legend className="fieldset-legend">Enter a UID to Start a New Chat</legend>
@@ -134,13 +134,14 @@ export default function MessagesPage(){
             const friendUid = chat.participants.find(uid => uid !== user.uid);
             return (
                 <button className="btn" key={chat.id} onClick={() => handleClickFriend(friendUid)}>
-                {friendUid}
+                {chat.displayName}
                 </button>
             );
         })} 
     </div>
 
-    <div className="flex-1 flex flex-col">
+    {/* chat container */}
+    <div className="flex-1 flex flex-col overflow-hidden max-h-[85vh]">
       {/* messages - flex-1 makes sure msgs take all remaining space */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {/* chat bubble on the left side if current user sent it, chat bubble on left side if non current user sent it */}

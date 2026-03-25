@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy } from "firebase/firestore"
+import { addDoc, collection, serverTimestamp, onSnapshot, query, orderBy } from "firebase/firestore"
 import { db } from "../firebase/firebase.config";
 import { MessagesContext } from "./MessagesContext";
 
