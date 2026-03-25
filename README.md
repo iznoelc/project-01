@@ -13,3 +13,5 @@ will be here
 - https://firebase.google.com/docs/web/setup
 - https://firebase.google.com/docs/auth/web/start?authuser=0 
 - https://firebase.google.com/docs/auth/web/manage-users
+- https://www.youtube.com/watch?v=0gLr-pBIPhI
+- https://www.freecodecamp.org/news/building-a-real-time-chat-app-with-reactjs-and-firebase/ 

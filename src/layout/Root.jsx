@@ -3,15 +3,20 @@ import { Outlet } from "react-router";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 
+import MessagesProvider from '../contexts/MessagesProvider.jsx';
+import ChatsProvider from '../contexts/ChatsProvider.jsx';
+
 import { ToastContainer, Zoom } from 'react-toastify';
 
 const Root = () => {
   return (
     <>
-      <div className="h-screen flex flex-col overflow-hidden">
+    <MessagesProvider>
+    <ChatsProvider>
+      <div className="w-full h-screen flex flex-col">
         <NavBar />
         
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 pt-16 overflow-auto">
           <ToastContainer
             position="top-center"
             autoClose={5000}
@@ -31,6 +36,8 @@ const Root = () => {
 
         <Footer/>
       </div>
+      </ChatsProvider>
+      </MessagesProvider>
     </>
   );
 };
