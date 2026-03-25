@@ -22,7 +22,8 @@ export default function Home(){
     return (
         <>
         {!loggedIn && (
-            <div>
+        <div className="min-h-screen flex flex-col">
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
                 <div className="hero bg-base-200 min-h-80vh">
                     <div className="hero-content flex-col lg:flex-row text-center gap-12 p-4">
                         <img
@@ -52,7 +53,7 @@ export default function Home(){
                 ))}
             </div>
             </div>
-            
+        </div>    
         )}
         {loggedIn &&
         (
