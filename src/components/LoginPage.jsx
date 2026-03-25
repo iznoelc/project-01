@@ -14,6 +14,9 @@ import {
 import FallbackElement from "./FallbackElement";
 import { errorNotify } from "../utils/ToastifyNotifications";
 
+import { createUserInFirestore } from "../utils/CreateUserInFirestore";
+
+
 function LoginPage(){
     const navigate = useNavigate(); // used to navigate to a new page after successful login
     const { signInWithGoogle, signInUser } = useAuth(); // use functions from custom use auth hook to sign in with google or with email and password
@@ -81,6 +84,7 @@ function LoginPage(){
             // successful sign in
             const user = result.user;
             console.log(user.displayName);
+            createUserInFirestore(user.uid, user.displayName);
             setLoginLoading(false)
             navigate("/", { replace: true });
         })

@@ -16,6 +16,8 @@ import useAuth from "../hooks/useAuth";
 import FallbackElement from "./FallbackElement";
 import { errorNotify } from "../utils/ToastifyNotifications";
 
+import { createUserInFirestore } from "../utils/CreateUserInFirestore";
+
 function SignUpPage(){    
     const navigate = useNavigate(); // this is used to navigate the user to a new page after successful sign up
     const { signInWithGoogle, createUser, loggedIn } = useAuth(); // sign up with email and password or with google uses functions from the useAuth custom hook 
@@ -44,25 +46,27 @@ function SignUpPage(){
     };
 
     // called when user hits the sign up button
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault(); // Prevents page reload
         console.log("Form Submitted:", formData);
         setSignUpLoading(true);
         
-        createUser(formData.email, formData.password)
-        .then((userCredential) => {
+        try {
+            const userCredential = await createUser(formData.email, formData.password);
             // successful sign up
             const user = userCredential.user;
             console.log(user);
             console.log("loggedIn: " + loggedIn);
 
-                        updateProfile(user, {
+            await updateProfile(user, {
                 displayName: formData.username
             });
+            
+            createUserInFirestore(user.uid, user.displayName);
+
             setSignUpLoading(false);
             navigate("/", { replace: true });
-        })
-        .catch((error) => {
+        } catch (error) {
             // give the user an alert if sign up was unsuccessful and log errors for debugging
             setMsg("Error signing up. Please try again!");
             errorNotify(msg);
@@ -72,7 +76,7 @@ function SignUpPage(){
             console.log("error code: ", errorCode);
             console.log("error message: ", errorMessage);
             
-        });
+        };
     };
 
     // this is called when the user signs up with google
@@ -88,6 +92,7 @@ function SignUpPage(){
                 image: result.user.photoURL,
             };
             console.log(newUser);
+            createUserInFirestore(newUser.uid, newUser.displayName);
             
             //navigate("/", { replace: true });
             //console.log(token);

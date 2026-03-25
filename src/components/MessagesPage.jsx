@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { addDoc, collection, serverTimestamp, onSnapshot, query, where } from "firebase/firestore"
+import { addDoc, collection, serverTimestamp, onSnapshot, query, where, doc, getDoc } from "firebase/firestore";
+import { errorNotify } from "../utils/ToastifyNotifications";
+import { findUser } from "../utils/CreateUserInFirestore";
+
 
 import { HiPaperAirplane } from "react-icons/hi2";
 
@@ -11,6 +14,7 @@ import { db } from "../firebase/firebase.config";
 
 export default function MessagesPage(){
     const [friendUID, setFriendUID] = useState(""); // the friend the user is chatting with
+    const [friendName, setFriendName] = useState("");
     const { chats } = useChats(); // chats that the user is a part of
 
     // get relevant variables to update chat using the useMessages hook
@@ -57,7 +61,18 @@ export default function MessagesPage(){
      * @returns
      */
     const handleAddChat = async () => {
-        if (!friendUID) return;
+        const friend = await findUser(friendUID);
+
+        if(!friend.exists()) {
+            errorNotify("That user does not exist! Please enter a valid User ID.");
+            return;
+        }
+
+        if (friendUID === user.uid){
+            errorNotify("That's you! Enter a User ID of your friend.");
+            return;
+        }
+
         const chatId = await createOrGetChat(friendUID);
         setCurrentChatId(chatId);
         setFriendUID("");
