@@ -1,6 +1,43 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+
+
+function sortTasksList(DataArray){
+  let returnArray = [...DataArray];
+    
+    returnArray.sort((a, b) => {
+        const diff = a.date - b.date;
+        return diff;
+    });
+
+
+    return returnArray;
+}
+
+
 
 export default function ToDoPage() {
+  const calendarRef = useRef();
+
+  
+  useEffect(() => {
+    if (!calendarRef.current) return;
+
+    function handleDateChange(e) {
+        if(e != null){
+        setFormData(prev => ({
+          ...prev,
+          selectedDay: e.target.value
+        }));
+      }
+    }
+    calendarRef.current.addEventListener("change", handleDateChange);
+    
+    return () => {
+      //calendarRef.current.removeEventListener("change", handleDateChange);
+    };
+  }, []);
+
   // List of tasks: each task has { task: string, date: string }
   const [tasksList, setTasksList] = useState([]);
 
@@ -16,6 +53,9 @@ export default function ToDoPage() {
     date: "", // datetime-local format: "YYYY-MM-DDTHH:MM"
     selectedDay: ""
   });
+
+
+  let isWeekly = false;
 
 
   const handleChange = (event) => {
@@ -46,7 +86,14 @@ export default function ToDoPage() {
       date: ""
     }));
 
+      //setTasksList(sortTasksList(tasksList));
+
       };
+
+    const removeTask = (task) => {
+        setTasksList(tasksList.filter(tasks =>
+            tasks != task));
+    };
 
   return (
     <>
@@ -86,40 +133,48 @@ export default function ToDoPage() {
       >
         Add Task
       </button>
+      <div className="grid grid-cols-2 gap-4">
 
-      <calendar-date className="cally bg-base-100 border border-base-300 shadow-lg rounded-box"
-          name="selectedDay"
+        <calendar-date className="cally bg-base-100 border border-base-300 shadow-lg rounded-box"
+            name="selectedDay"
+            ref={calendarRef}
+            value={formData.selectedDay}
+            >
+          <svg aria-label="Previous" className="fill-current size-4" slot="previous" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path></svg>
+          <svg aria-label="Next" className="fill-current size-4" slot="next" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>
+          <calendar-month></calendar-month>
+          </calendar-date>
+        <list>
           
-          value={formData.selectedDay}
-          onChange={(e) => {
-              setFormData(prev => ({
-                ...prev,
-                selectedDay: e.target.value   // ALWAYS "YYYY-MM-DD"
-                
-              }));
-            }}
-          >
-        <svg aria-label="Previous" className="fill-current size-4" slot="previous" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path></svg>
-        <svg aria-label="Next" className="fill-current size-4" slot="next" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>
-        <calendar-month></calendar-month>
-        </calendar-date>
+          <label className="label">
+            Daily
+            <input type="checkbox" defaultChecked className="toggle" />
+            Weekly
+          </label>
+          <h1>This Day’s Tasks</h1>
 
-      <h1>This Day’s Tasks</h1>
-
-      <ul className="mt-2">
-        {tasksList.length === 0 && <li>No tasks yet.</li>}
-        {tasksList.filter(task =>
+          <ul className="mt-2">
+            {tasksList.length === 0 && <li>No tasks yet.</li>}
+            {tasksList.filter(task =>
             task.date.slice(0, 10) === formData.selectedDay
-          )
-          .map((t, idx) => (
-          <li key={idx} className="py-1">
-            <span className="font-medium">{t.task}</span>{" "}
-            <span className="opacity-70">
-              — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)}
-            </span>
-          </li>
-        ))}
-      </ul>
+          
+              )
+              .map((t, idx) => (
+              <li key={idx} className="py-1">
+                <span className="font-medium">{t.task}</span>{" "}
+                <span className="opacity-70">
+                  — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)}
+                </span>
+                <button type="button"
+                        className="btn"
+                        onClick = {() => removeTask(t)}>
+                        Complete Task</button>
+                        
+              </li>
+            ))}
+          </ul>
+        </list>
+      </div>
     </>
   );
 }
