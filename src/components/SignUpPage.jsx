@@ -16,7 +16,7 @@ import useAuth from "../hooks/useAuth";
 import FallbackElement from "./FallbackElement";
 import { errorNotify } from "../utils/ToastifyNotifications";
 
-import { createUserInFirestore } from "../utils/CreateUserInFirestore";
+import { createUserInFirestore } from "../utils/FirestoreUserHelper";
 
 function SignUpPage(){    
     const navigate = useNavigate(); // this is used to navigate the user to a new page after successful sign up

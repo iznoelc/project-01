@@ -14,7 +14,7 @@ import {
 import FallbackElement from "./FallbackElement";
 import { errorNotify } from "../utils/ToastifyNotifications";
 
-import { createUserInFirestore } from "../utils/CreateUserInFirestore";
+import { createUserInFirestore } from "../utils/FirestoreUserHelper";
 
 
 function LoginPage(){

@@ -1,5 +1,6 @@
 import React from "react";
 
+import PrivateRoute from "./PrivateRoute";
 import Home from "../components/Home";
 import Root from "../layout/Root";
 import FallbackElement from "../components/FallbackElement";
@@ -22,9 +23,25 @@ const MainRouter = [
         HydrateFallback: FallbackElement },
       { path: "signup", Component: SignUpPage },
       { path: "login", Component: LoginPage },
-      { path: "messages", Component: MessagesPage },
-      { path: "weather", Component: WeatherPage },
-      { path: "todo", Component: ToDoPage },
+      { path: "messages",
+        element: (
+          <PrivateRoute>
+            <MessagesPage></MessagesPage>
+          </PrivateRoute>
+          ), },
+      { path: "weather",
+        element: (
+          <PrivateRoute>
+            <WeatherPage></WeatherPage>
+          </PrivateRoute>
+          ), },
+      { path: "todo",
+        element: (
+          <PrivateRoute>
+            <ToDoPage></ToDoPage>
+          </PrivateRoute>
+        ),
+       },
       { path: "forgotpassword", Component: ForgotPasswordPage},
     ],
   },
