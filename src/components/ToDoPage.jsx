@@ -193,6 +193,24 @@ export default function ToDoPage() {
 
     if (!task.trim() || !date.trim() || !tasksListId) return;
 
+    // Check to see if the task is already added or if the task is set to before today.
+    
+    const newTaskName = task.trim().toLowerCase();
+    const newTaskDate = toDateOnly(date).getTime();
+
+    const alreadyExists = tasksList.some(t => {
+      const existingName = t.task.toLowerCase();
+      const existingDate = toDateOnly(t.date).getTime();
+
+      return existingName === newTaskName && existingDate === newTaskDate;
+    });
+
+    // If we already have the task in the tasks list do not add the task
+    if (alreadyExists) {
+        alert("That task already exists for this day.");
+        return;
+      }
+
     await addDoc(
       collection(db, "tasksList", tasksListId, "tasks"),
       {
