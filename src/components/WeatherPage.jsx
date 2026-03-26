@@ -4,6 +4,13 @@ import cloud_icon from '../assets/cloud.png'
 import drizzle_icon from '../assets/drizzle.png'
 import rain_icon from '../assets/rain.png'
 import snow_icon from '../assets/snow.png'
+//do react-select-async-paginate
+
+//resource list for this section
+//https://youtu.be/Reny0cTTv24?si=hz7Lcf0o6MU9zsEm
+//https://youtu.be/UjeXpct3p7M?si=yfStG2BNVAMpS_mi
+//https://developers.google.com/maps/documentation/javascript/examples/rgm-autocomplete?
+
 
 //holds icons to be accessed later
 const allIcons = {};
@@ -26,9 +33,6 @@ export default function WeatherPage() {
   const [suggestions, setSuggestions] = useState([]);
   const [cards, setCards] = useState([]);
   const inputRef = useRef();
-
-  //city suggestions for the search bar
-  const cityList = ["London", "Paris", "Tokyo", "New York", "Berlin", "Sydney", "Toronto", "Rome", "Madrid"];
 
   //search, simple data retrieval and storing using api
   const search = async (city) => {
@@ -54,20 +58,40 @@ export default function WeatherPage() {
     }
   };
 
-  //as user searches suggest roptions for cities
-  function handleInputChange(e) {
+  async function fetchCitySuggestions(query){
+    //if empty return
+    if(!query) return [];
+
+    //else process and grab city suggestions from api
+    const url = `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}`;
+    
+    const res = await fetch(url);
+    const data = await res.json();
+
+    return data.map(city => ({
+      name: `${city.name}, ${city.country}`
+    }));
+  }
+
+  //as user types in the search bar suggest cities, if no typing is occuring wait
+  async function handleInputChange(e) {
     const value = e.target.value;
-    const matches = cityList.filter(city =>
-      city.toLowerCase().startsWith(value.toLowerCase())
-    );
-    setSuggestions(matches);
+    if (value.length <2){
+      setSuggestions([])
+      return;
+    }
+    const result = await fetchCitySuggestions(value);
+    setSuggestions(result)
   }
 
   //if the user chooses a city change current card to new card info
   async function handleSelect(city) {
-    const result = await search(city);
+    const result = await search(city.name);
+    //safty check
+    if (!result) return;
     setCards(prev => [...prev, result]);
     setSuggestions([]);
+    inputRef.current.value = city.name;
   }
 
   //webpage content here
@@ -87,17 +111,18 @@ export default function WeatherPage() {
 
         {suggestions.length > 0 && (
         <ul className="absolute left-0 right-0 mt-1 bg-white shadow-lg rounded-md z-50 max-h-60 overflow-y-auto">
-            {suggestions.map(city => (
+          {suggestions.map((city, index) => (
             <li
-                key={city}
-                className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleSelect(city)}
+              key={index}
+              className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleSelect(city)}
             >
-                {city}
+              {city.name}
             </li>
-            ))}
+          ))}
         </ul>
-        )}
+      )}
+
     </div>
 
     {/* Weather display */}
