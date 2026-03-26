@@ -23,20 +23,21 @@ export default function Home(){
         <>
         {!loggedIn && (
         <div className="min-h-screen flex flex-col">
-            <div className="flex-1 overflow-y-auto p-2 pt-16 space-y-2">
-                <div className="hero bg-gradient-to-r from-base-100 to-base-300 min-h-80vh">
+            <div className="flex-1 overflow-y-auto p-2 space-y-2">
+                <div className="hero bg-gradient-to-r from-base-100 to-base-300 min-h-screen">
                     <div className="hero-content flex-col lg:flex-row text-center gap-12 p-4">
                         <img
                         src={Lily}
                         className="max-w-lg rounded-lg"
                         />
                         <div className="p-4">
-                        <h1 className="text-6xl font-bold">Clever catchphrase here.</h1>
-                        <h3 className="text-xl text-neutral font-bold italic">Manage your tasks as mindlessly as flowers bloom.</h3>
+                        <h1 className="text-6xl font-bold">Ready to manage your garden?</h1>
+                        <h3 className="text-xl text-neutral font-bold italic">Our Garden lets you manage your tasks as mindlessly as flowers bloom.</h3>
                         <p className="py-6">
-                            Intro i will write an intro here later <br/> im too lazy to come up with something clever right now jajjaajajaja
-                            < br/>< br/>
-                            It looks like you're logged out! <b>Sign up now</b> to access all our features.
+                            Capture, organize, and tackle your to-do list. Add and view weather from locations around the world. Message your close friends to help you stay on track.
+                            <br /><br />It's all here in Your Garden! Are <i>you</i> ready to organize <i>your</i> life?
+                            <br /><br /><br />
+                            <b>Sign up now</b> to access all our features.
                             <br /><span className="text-2xl dr-sugiyama-regular">It's free!</span>
                         </p>
                         <div className="flex gap-2 justify-center">
@@ -45,13 +46,7 @@ export default function Home(){
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col items-center justify-center gap-12 p-16">
-                <h1 className="text-3xl text-center">For testing. will be removed later.
-                </h1>
-                {navigation.map((n, index) => (
-                    <button key={index} class="btn btn-outline btn-primary" onClick={() => navigate(n.link)}>{n.name}</button>
-                ))}
-            </div>
+
             </div>
         </div>    
         )}

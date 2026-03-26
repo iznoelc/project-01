@@ -3,6 +3,7 @@ import useAuth from "../hooks/useAuth";
 import { useState, useEffect } from "react"; 
 import { addDoc, doc, collection, serverTimestamp, query, orderBy, onSnapshot, deleteDoc } from "firebase/firestore"
 import { db } from "../firebase/firebase.config";
+import { successNotify } from "../utils/ToastifyNotifications";
 
 import { SavedLinksContext } from "./SavedLinksContext";
 
@@ -50,12 +51,14 @@ export default function SavedLinksProvider ({children}) {
             link_url: url,
             createdAt: serverTimestamp(),
         });
+        successNotify("Successfully added a saved link to " + name);
     }
 
     const deleteLink = async (linkId) => {
         const linkRef = doc(db, "users_by_uid", user.uid, "saved_links", linkId);
         
         await deleteDoc(linkRef);
+        successNotify("Successfully deleted link");
     }
 
     return (

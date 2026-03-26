@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import useUserByUID from "../hooks/useUserByUID";
+import { Popconfirm } from 'antd';
+
 import useSavedLinks from "../hooks/useSavedLinks";
 
 
 export default function SavedLinks() {
-    const { userDoc } = useUserByUID();
     const { userLinks, addLink, deleteLink } = useSavedLinks();
 
     const [formData, setFormData] = useState({
@@ -39,13 +39,26 @@ export default function SavedLinks() {
         {/* Open the modal using document.getElementById('ID').showModal() method */}
         
         <dialog id="links_modal" className="modal">
-            <div className="modal-box">
+            <div className="modal-box max-w-xl">
                 <h2 className="fontdiner-swanky-regular text-3xl">Your Saved Links</h2>
-                <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-3 gap-4 p-4">
+                {userLinks.length === 0 && <p className="text-pink-400">No saved links!</p>}
                 {userLinks.map((link,index) => (
                     <div key={index} className="flex">
-                        <a href={link.link_url}> {link.link_name} </a>
-                        <p onClick={() => deleteLink(link.id)}>DELETE</p>
+                        <li><a href={link.link_url} className="underline"> {link.link_name} </a></li>
+                        {/* <p onClick={}>DELETE</p> */}
+                        <Popconfirm
+                            title="Delete Saved Link"
+                            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                            description="Are you sure you want to delete this saved link?"
+                            onConfirm={() => deleteLink(link.id)}
+                            okText="Yes"
+                            okType="danger"
+                            cancelText="No"
+                            className="z-100 max-w-sm"
+                            >
+                            <button className="btn btn-primary btn-xs" danger>Delete</button>
+                        </Popconfirm>
                     </div>
                 ))}
                 </div>

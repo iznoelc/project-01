@@ -41,7 +41,7 @@ export default function NavBar(){
                 </ul>
                 </div>
                 <span className="text-4xl pl-4 pr-2"><IoFlower /></span>
-                <a className="btn btn-ghost text-3xl fontdiner-swanky-regular" onClick={() => navigate("/", {replace: true})}>Task Manager</a>
+                <a className="btn btn-ghost text-3xl fontdiner-swanky-regular" onClick={() => navigate("/", {replace: true})}>Your Garden</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
@@ -80,7 +80,7 @@ export default function NavBar(){
                 </ul> */}
                 </div>
                 <span className="text-4xl pl-4 pr-2"><IoFlower /></span>
-                <a className="btn btn-ghost text-3xl fontdiner-swanky-regular" onClick={() => navigate("/", {replace: true})}>Task Manager</a>
+                <a className="btn btn-ghost text-3xl fontdiner-swanky-regular" onClick={() => navigate("/", {replace: true})}>Your Garden</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 {/* <ul className="menu menu-horizontal px-1">
