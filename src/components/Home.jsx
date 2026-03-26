@@ -24,7 +24,7 @@ export default function Home(){
         {!loggedIn && (
         <div className="min-h-screen flex flex-col">
             <div className="flex-1 overflow-y-auto p-2 pt-16 space-y-2">
-                <div className="hero bg-base-200 min-h-80vh">
+                <div className="hero bg-gradient-to-r from-base-100 to-base-300 min-h-80vh">
                     <div className="hero-content flex-col lg:flex-row text-center gap-12 p-4">
                         <img
                         src={Lily}
@@ -57,46 +57,40 @@ export default function Home(){
         )}
         {loggedIn &&
         (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-            <div className="flex-1 flex items-center justify-center w-full p-4 pt-16 overflow-y-auto">
-                <div className="hero w-[40%] max-w-[1200px] bg-base-200 min-h-80vh rounded-3xl shadow-sm shadow-pink-200">
-                    <div className="hero-content flex-col lg:flex-row text-center p-4">
-                        <img
-                        src={Peonies}
-                        className="max-w-64 rounded-lg"
-                        />
-                        <div className="">
-                        <h1 className="text-6xl font-bold">Welcome back!</h1>
-                        <h3 className="text-xl text-neutral font-bold italic">What's on the agenda today?</h3>
-                        <p className="pt-6">
-                            Click on any of the cards below to get started!
-                        </p>
-                        </div>
-                    </div>
+        <>
+        <div className="pt-4 p-4">
+        <div className="hero bg-gradient-to-r from-base-100 to-base-300 min-h-96 p-4">
+            <div className="hero-content text-center gap-5">
+                <div className="max-w-md p-2">
+                <img src={Peonies} alt="Peonies" className="object-contain mx-auto mb-4 max-w-64"></img>
+                <h1 className="text-5xl font-bold">We're glad to see you back!</h1>
+                <p className="py-2">
+                    <span className="text-lg text-neutral text-bold italic">What's on the agenda today?</span>
+                    <span className="opacity-70"><br />Need to send a message? Or update your to-do list? <br/>Click on any of the cards below to get started.</span>
+                </p>
                 </div>
             </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 max-w-8xl mx-auto p-8 justify-center items-center">
-                    <div className="card w-96 bg-base-100 card-md shadow-sm">
-                        <div className="card-body">
-                            <h2 className="card-title">Medium Card</h2>
-                            <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-                            <div className="justify-end card-actions">
-                            <button className="btn btn-primary">Buy Now</button>
-                            </div>
-                        </div>
-                    </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 max-w-5xl mx-auto p-8"> 
+            {navigation.map((n, index) => (
+                <div key={index} className="card w-full bg-base-100 card-xs shadow-sm
+                hover:scale-110 hover:transition-transform hover:border-8 hover:border-solid hover:border-base-300 hover:cursor-pointer"
+                onClick={() => navigate(n.link)}>
+                    <div className="card-body">
+                        {/* put the title and description of the movie in the cards */}
+                        <h2 className="card-title fontdiner-swanky-regular text-2xl" key={index}>{n.name}</h2>
+                        <p className="text-primary opacity-80 text-lg">{n.desc}</p>
 
-                    <div className="card w-96 bg-base-100 card-md shadow-sm">
-                        <div className="card-body">
-                            <h2 className="card-title">Medium Card</h2>
-                            <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-                            <div className="justify-end card-actions">
-                            <button className="btn btn-primary">Buy Now</button>
-                            </div>
+                        {/* <div className="justify-end card-actions">
+                        <button className="btn btn-outline btn-primary btn-circle" onClick={() => navigate(n.link)}>Go!</button>
+                        </div> */}
+
                         </div>
-                    </div>
                 </div>
+            ))}
             </div>
+            </div>
+        </>
         )}
         </>
     );

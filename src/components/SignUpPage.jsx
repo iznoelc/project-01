@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import RoseBanner from "../assets/flowers/rose_banner.png";
 
 import {
   GoogleAuthProvider,
@@ -127,7 +128,8 @@ function SignUpPage(){
         {signUpLoading && (<FallbackElement />)}
         {!signUpLoading && (
             <div className="flex flex-col items-center justify-center gap-5 p-10">
-            <h1 className="primary-font text-primary text-2xl">Get Started</h1>
+            <img src={RoseBanner} className="w-lg"></img>
+            <h1 className="primary-font text-primary text-4xl">Get Started</h1>
             <form onSubmit={handleSubmit}>
             <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xl border p-4">
                 <legend className="fieldset-legend">Sign Up</legend>

@@ -115,7 +115,7 @@ export default function MessagesPage(){
     {/* side bar */}
     <div className="w-96 border-r bg-gray-50 flex flex-col p-4 gap-4">
         <div className="flex justify-center items-center p-4 gap-4">
-            <p>Copy your UID</p>
+            <p>Copy your User ID</p>
             <input
                 value={user.uid}
                 disabled
@@ -129,7 +129,7 @@ export default function MessagesPage(){
             </div>
         </div>
         
-        <legend className="fieldset-legend">Enter a UID to Start a New Chat</legend>
+        <legend className="fieldset-legend">Enter a User ID to Start a New Chat</legend>
         <div className="flex pb-5">
             <label className="input">
             <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -147,19 +147,23 @@ export default function MessagesPage(){
             <input
                 type="search"
                 className="grow"
-                placeholder="UID"
+                placeholder="Friend User ID"
                 value={friendUID}
                 onChange={(e) => setFriendUID(e.target.value)}
             />
             </label>
-            <button className="btn" onClick={handleAddChat}>Add</button>
+            <button className="btn shadow-sm bg-base-100
+                hover:bg-base-200 hover:border-2 hover:border-solid hover:border-base-300 hover:cursor-pointer"
+                onClick={handleAddChat}>Add</button>
         </div>
 
         <legend className="fieldset-legend">Your Chats</legend>
         {chats.map(chat => {
             const friendUid = chat.participants.find(uid => uid !== user.uid);
             return (
-                <button className="btn" key={chat.id} onClick={() => handleClickFriend(friendUid)}>
+                <button className="btn shadow-sm bg-base-100
+                hover:bg-base-200 hover:scale-105 hover:transition-scale hover:border-2 hover:border-solid hover:border-base-300 hover:cursor-pointer"
+                key={chat.id} onClick={() => handleClickFriend(friendUid)}>
                 {chat.displayName}
                 </button>
             );
@@ -204,8 +208,8 @@ export default function MessagesPage(){
       </form>
     </>
     ) : (
-        <div className="flex-1 flex items-center justify-center text-gray-400">
-            Select a chat to start messaging!
+        <div className="flex-1 flex items-center justify-center text-pink-300">
+            Select a chat or add a User ID to start messaging!
         </div>
     )}
     </div>

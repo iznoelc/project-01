@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { errorNotify, successNotify } from "../utils/ToastifyNotifications";
-
+import RoseBanner from "../assets/flowers/rose_banner.png"
 
 export default function ForgotPasswordPage(){
     const { sendPasswordReset } = useAuth();     
@@ -45,6 +45,7 @@ export default function ForgotPasswordPage(){
     return (
         <>
         <div className="flex flex-col items-center justify-center gap-5 p-10">
+            <img src={RoseBanner} className="w-lg"></img>
             <h1 className="text-3xl">Forget your password?</h1>
             <h3 className="text-xl">No worries! Enter your email and, if it exists, we'll send you an email to reset.</h3>
             <form className="fieldset bg-base-200 border-base-300 rounded-box w-xl border p-4">

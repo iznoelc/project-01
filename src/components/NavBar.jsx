@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Logo from "../assets/flowers/pink_flower_logo.png";
+import SavedLinks from "./SavedLinks";
+
 import { IoFlower} from "react-icons/io5";
 import { IoMdHome } from "react-icons/io";
 import { FiMessageSquare } from "react-icons/fi";
@@ -39,14 +41,15 @@ export default function NavBar(){
                 </ul>
                 </div>
                 <span className="text-4xl pl-4 pr-2"><IoFlower /></span>
-                <a className="btn btn-ghost text-4xl dr-sugiyama-regular" onClick={() => navigate("/", {replace: true})}>Task Manager</a>
+                <a className="btn btn-ghost text-3xl fontdiner-swanky-regular" onClick={() => navigate("/", {replace: true})}>Task Manager</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
                 {navigation.map((n, index) => (
                     <li key={index}><a onClick={() => navigate(n.link)}>{n.icon} {n.name}</a></li>
                 ))}
-                <li><a><PiLinkSimpleBold /> Saved Links</a></li>
+                <li><a onClick={()=>document.getElementById('links_modal').showModal()}><PiLinkSimpleBold /> Saved Links</a></li>
+                <SavedLinks />
                 </ul>
             </div>
             <div className="navbar-end">
@@ -77,7 +80,7 @@ export default function NavBar(){
                 </ul> */}
                 </div>
                 <span className="text-4xl pl-4 pr-2"><IoFlower /></span>
-                <a className="btn btn-ghost text-4xl dr-sugiyama-regular" onClick={() => navigate("/", {replace: true})}>Task Manager</a>
+                <a className="btn btn-ghost text-3xl fontdiner-swanky-regular" onClick={() => navigate("/", {replace: true})}>Task Manager</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 {/* <ul className="menu menu-horizontal px-1">
