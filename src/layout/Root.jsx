@@ -5,6 +5,9 @@ import Footer from "../components/Footer";
 
 import MessagesProvider from '../contexts/MessagesProvider.jsx';
 import ChatsProvider from '../contexts/ChatsProvider.jsx';
+import UserByUIDProvider from '../contexts/UserByUIDProvider.jsx';
+import SavedLinksProvider from '../contexts/SavedLinksProvider.jsx';
+
 
 import { ToastContainer, Zoom } from 'react-toastify';
 
@@ -13,6 +16,8 @@ const Root = () => {
     <>
     <MessagesProvider>
     <ChatsProvider>
+    <UserByUIDProvider>
+    <SavedLinksProvider>
       {/*<div className="w-full h-screen flex flex-col">*/}
       <div className="flex flex-col min-h-screen">
 
@@ -39,6 +44,8 @@ const Root = () => {
 
         <Footer/>
       </div>
+      </SavedLinksProvider>
+      </UserByUIDProvider>
       </ChatsProvider>
       </MessagesProvider>
     </>
