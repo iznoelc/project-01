@@ -1,4 +1,21 @@
 import { useEffect, useRef, useState } from "react";
+import useAuth from "../hooks/useAuth";
+import { db } from "../firebase/firebase.config";
+
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp,
+  where,
+  getDocs,
+} from "firebase/firestore";
+
+
 
 
 
@@ -6,7 +23,7 @@ function sortTasksList(DataArray){
   let returnArray = [...DataArray];
     
     returnArray.sort((a, b) => {
-        const diff = a.date - b.date;
+        const diff = toDateOnly(a.date) - toDateOnly(b.date);
         return diff;
     });
 
@@ -41,9 +58,49 @@ function isSameWeek(dateA, dateB) {
 
 
 export default function ToDoPage() {
+
+  const { user } = useAuth();
+
+
   const calendarRef = useRef();
 
   
+
+    /**
+     * Helper function to determine if a UID already has a tasksList associated with it.
+     * It searches through the chats and assigns it to existingChat. If this is not null, it returns this id.
+     * Otherwise, it must create a new chat, so it adds a doc to the chats collection in firestore, adding the
+     * two users (friend and current user) as participants of the chat. Then, it returns the id of this new chat
+     * @param {} UID 
+     * @returns ID of existing chat or new chat
+     */
+    const createOrGetTasksList = async (UID) =>{
+        // check if the chat already exists. if it does, return the id
+        const q = query(
+          collection(db, "tasksList"),
+          where("participants", "array-contains", UID)
+        );
+
+        const snapshot = await getDocs(q);
+
+        if (!snapshot.empty) {
+          return snapshot.docs[0].id; 
+        }
+        
+
+        // otherwise, create a new chat and then return its id
+        const docRef = await addDoc(collection(db, "tasksList"), {
+          participants: [UID],
+          createdAt: serverTimestamp(),
+        });
+
+        return docRef.id;
+    }
+    
+
+
+
+
   useEffect(() => {
     if (!calendarRef.current) return;
 
@@ -63,7 +120,39 @@ export default function ToDoPage() {
   }, []);
 
   // List of tasks: each task has { task: string, date: string }
+  
   const [tasksList, setTasksList] = useState([]);
+  const [tasksListId, setTasksListId] = useState(null);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const init = async () => {
+      const id = await createOrGetTasksList(user.uid);
+      setTasksListId(id);
+
+      const q = query(
+        collection(db, "tasksList", id, "tasks"),
+        orderBy("createdAt", "asc")
+      );
+
+      return onSnapshot(q, snapshot => {
+        const tasks = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setTasksList(tasks);
+      });
+    };
+
+    const unsubscribePromise = init();
+
+    return () => {
+      unsubscribePromise?.then(unsub => unsub && unsub());
+    };
+  }, [user]);
+
+
 
     //  Holds a String - Task
     //  Holds a String - Date
@@ -98,32 +187,38 @@ export default function ToDoPage() {
     }));
   };
 
-  const addTask = () => {
+  
+  const addTask = async () => {
     const { task, date } = formData;
 
-    
-    if (!task.trim() || !date.trim()) {
-      return;
-    }
+    if (!task.trim() || !date.trim() || !tasksListId) return;
 
-    // This form is updated by addTask whenever the add task button is pressed
-    setTasksList((prev) => [...prev, { task: task.trim(), date }]);
+    await addDoc(
+      collection(db, "tasksList", tasksListId, "tasks"),
+      {
+        task: task.trim(),
+        date,
+        createdAt: serverTimestamp(),
+      }
+    );
 
-    // Clear the inputs, except the selected day
     setFormData(prev => ({
       ...prev,
       task: "",
       date: ""
     }));
+  };
 
-      //setTasksList(sortTasksList(tasksList));
 
-      };
 
-    const removeTask = (task) => {
-        setTasksList(tasksList.filter(tasks =>
-            tasks != task));
-    };
+  const removeTask = async (taskId) => {
+    if (!tasksListId) return;
+
+    await deleteDoc(
+      doc(db, "tasksList", tasksListId, "tasks", taskId)
+    );
+  };
+
 
   return (
     <>
@@ -212,10 +307,13 @@ export default function ToDoPage() {
                   — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)}
                 </span>
                 
-                <button type="button"
-                        className="btn"
-                        onClick = {() => removeTask(t)}>
-                        Complete Task</button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => removeTask(t.id)}
+                >
+                  Complete Task
+                </button>
                         
               </li>
             ))}
