@@ -15,6 +15,30 @@ function sortTasksList(DataArray){
 }
 
 
+function toDateOnly(dateString) {
+  // dateString like "2026-03-25T14:30"
+  return new Date(dateString.slice(0, 10));
+}
+
+function startOfWeek(date) {
+  const d = new Date(date);
+  const day = (d.getDay() + 6) % 7; // Monday = 0
+  d.setDate(d.getDate() - day);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+
+function isSameWeek(dateA, dateB) {
+  return (
+    startOfWeek(dateA).getTime() ===
+    startOfWeek(dateB).getTime()
+  );
+}
+``
+
+
+
 
 export default function ToDoPage() {
   const calendarRef = useRef();
@@ -55,7 +79,13 @@ export default function ToDoPage() {
   });
 
 
-  let isWeekly = false;
+  const [isWeekly, setIsWeekly] = useState(false);
+
+  // Sets weekly to whatever the toggle is set to
+  const handleWeekly = (event) => {
+    setIsWeekly(event.target.checked);
+  };
+
 
 
   const handleChange = (event) => {
@@ -148,23 +178,40 @@ export default function ToDoPage() {
           
           <label className="label">
             Daily
-            <input type="checkbox" defaultChecked className="toggle" />
+            <input
+              type="checkbox"
+              className="toggle"
+              checked={isWeekly}
+              onChange={handleWeekly}
+            />
+
             Weekly
           </label>
           <h1>This Day’s Tasks</h1>
 
           <ul className="mt-2">
             {tasksList.length === 0 && <li>No tasks yet.</li>}
-            {tasksList.filter(task =>
-            task.date.slice(0, 10) === formData.selectedDay
-          
-              )
+
+            {
+              tasksList.filter(task => {
+                const taskDate = toDateOnly(task.date);
+                const selectedDate = toDateOnly(formData.selectedDay);
+
+                if (isWeekly) {
+                  return isSameWeek(taskDate, selectedDate);
+                }
+
+                // Daily
+                return taskDate.toDateString() === selectedDate.toDateString();
+              })
+
               .map((t, idx) => (
               <li key={idx} className="py-1">
                 <span className="font-medium">{t.task}</span>{" "}
                 <span className="opacity-70">
                   — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)}
                 </span>
+                
                 <button type="button"
                         className="btn"
                         onClick = {() => removeTask(t)}>
