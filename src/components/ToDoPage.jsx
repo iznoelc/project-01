@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { db } from "../firebase/firebase.config";
+import { errorNotify } from "../utils/ToastifyNotifications";
 
 import {
   collection,
@@ -205,11 +206,24 @@ export default function ToDoPage() {
       return existingName === newTaskName && existingDate === newTaskDate;
     });
 
+    
+
     // If we already have the task in the tasks list do not add the task
     if (alreadyExists) {
-        alert("That task already exists for this day.");
+        errorNotify("That task already exists for this day.");
         return;
       }
+
+    
+    const taskDate = new Date(date);   // full date + time
+    // Get current date
+    const now = new Date();
+
+      if (taskDate < now) {
+        errorNotify("This date is in the past");
+        return;
+      }
+
 
     await addDoc(
       collection(db, "tasksList", tasksListId, "tasks"),
@@ -240,7 +254,10 @@ export default function ToDoPage() {
 
   return (
     <>
-      <h1>To-Do</h1>
+      
+      <div className="grid grid-cols-2 gap-4" place-items-center content-center>
+      <div>
+          <h1>To-Do</h1>
 
       <input
         type="text"
@@ -276,17 +293,24 @@ export default function ToDoPage() {
       >
         Add Task
       </button>
-      <div className="grid grid-cols-2 gap-4">
+        <div class="hero bg-base-200 min-h-screen">
+          <div class="hero-content text-center">
+            <div class="max-w-md">
+              <calendar-date className="cally bg-base-100 border border-base-300 shadow-lg rounded-box"
+                name="selectedDay"
+                ref={calendarRef}
+                value={formData.selectedDay}
+                >
+              <svg aria-label="Previous" className="fill-current size-4" slot="previous" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path></svg>
+              <svg aria-label="Next" className="fill-current size-4" slot="next" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>
+              <calendar-month></calendar-month>
+              </calendar-date>
+            </div>
+          </div>
+        </div>
 
-        <calendar-date className="cally bg-base-100 border border-base-300 shadow-lg rounded-box"
-            name="selectedDay"
-            ref={calendarRef}
-            value={formData.selectedDay}
-            >
-          <svg aria-label="Previous" className="fill-current size-4" slot="previous" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path></svg>
-          <svg aria-label="Next" className="fill-current size-4" slot="next" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>
-          <calendar-month></calendar-month>
-          </calendar-date>
+        
+          </div>
         <list>
           
           <label className="label">
