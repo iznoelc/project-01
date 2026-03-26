@@ -3,12 +3,13 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { errorNotify } from "../utils/ToastifyNotifications";
 import { findUser } from "../utils/FirestoreUserHelper";
 
-
 import { HiPaperAirplane } from "react-icons/hi2";
+import { PiLinkSimpleBold } from "react-icons/pi";
 
 import useAuth from "../hooks/useAuth";
 import useMessages from "../hooks/useMessages";
 import useChats from "../hooks/useChats";
+import { copyToClipboard } from "../utils/CopyHelper";
 
 import { db } from "../firebase/firebase.config";
 
@@ -24,6 +25,7 @@ export default function MessagesPage(){
     const [newMsg, setNewMsg] = useState(""); // represents what the user is typing in the messages input box
 
     const bottomRef = useRef(null); // reference to the bottom of the page for the messages section to scroll to
+    const uidRef = useRef(null); // reference to the text where the user can copy their uid
 
     // SCROLL TO THE BOTTOM OF MESSAGES WHENEVER A NEW MESSAGE IS ADDED
     useEffect(() => {
@@ -97,39 +99,63 @@ export default function MessagesPage(){
         e.preventDefault(); // prevent the page from reloading when a message is sent
         if (newMsg === "" || !currentChatId) return; // don't send empty messages and make sure a chat is selected!
 
+        console.log("handle submit of sending msg");
         await sendMessage(newMsg, user, currentChatId);
 
         setNewMsg(""); // reset msg after submit
     };
+
+
+
+    console.log("current chat id: ", currentChatId);
 
     return (
     <> 
     <div className="flex-1 flex overflow-hidden">
     {/* side bar */}
     <div className="w-96 border-r bg-gray-50 flex flex-col p-4 gap-4">
+        <div className="flex justify-center items-center p-4 gap-4">
+            <p>Copy your UID</p>
+            <input
+                value={user.uid}
+                disabled
+                hidden
+                type="text"
+                ref={uidRef}
+            />
+            <div className="flex justify bg-base-200 rounded-full w-6 h-6 justify-center items-center hover:cursor-pointer"
+                 onClick={() => copyToClipboard(uidRef)}>
+                    <PiLinkSimpleBold />
+            </div>
+        </div>
+        
         <legend className="fieldset-legend">Enter a UID to Start a New Chat</legend>
-        <label className="input">
-        <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            strokeWidth="2.5"
-            fill="none"
-            stroke="currentColor"
-            >
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-            </g>
-        </svg>
-        <input
-            type="search"
-            className="grow"
-            placeholder="UID"
-            value={friendUID}
-            onChange={(e) => setFriendUID(e.target.value)}
-        />
-        </label>
-        <button className="btn" onClick={handleAddChat}>Add Chat</button>
+        <div className="flex pb-5">
+            <label className="input">
+            <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="2.5"
+                fill="none"
+                stroke="currentColor"
+                >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+                </g>
+            </svg>
+            <input
+                type="search"
+                className="grow"
+                placeholder="UID"
+                value={friendUID}
+                onChange={(e) => setFriendUID(e.target.value)}
+            />
+            </label>
+            <button className="btn" onClick={handleAddChat}>Add</button>
+        </div>
+
+        <legend className="fieldset-legend">Your Chats</legend>
         {chats.map(chat => {
             const friendUid = chat.participants.find(uid => uid !== user.uid);
             return (
@@ -139,10 +165,11 @@ export default function MessagesPage(){
             );
         })} 
     </div>
-
+    
     {/* chat container */}
     <div className="flex-1 flex flex-col overflow-hidden max-h-[85vh]">
-      {/* messages - flex-1 makes sure msgs take all remaining space */}
+    {currentChatId ? (
+    <>
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {/* chat bubble on the left side if current user sent it, chat bubble on left side if non current user sent it */}
         {msgs.map((message,index) => (
@@ -152,7 +179,7 @@ export default function MessagesPage(){
             }>
             <div className="chat-header">
                 {message.displayName || "Unknown Chatter"}
-                <time className="text-xs opacity-50">{message.createdAt?.toDate?.().toLocaleTimeString?.() || ""}</time>
+                <time className="text-xs opacity-50">{message.createdAt?.toDate?.().toLocaleString?.() || ""}</time>
             </div>
             <div className="chat-bubble text-lg">{message.text}</div>
             </div>
@@ -175,6 +202,12 @@ export default function MessagesPage(){
           {<HiPaperAirplane />}
         </button>
       </form>
+    </>
+    ) : (
+        <div className="flex-1 flex items-center justify-center text-gray-400">
+            Select a chat to start messaging!
+        </div>
+    )}
     </div>
     </div>
     </>

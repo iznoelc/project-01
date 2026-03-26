@@ -2,15 +2,23 @@ import { useEffect, useState } from "react";
 import { addDoc, collection, serverTimestamp, onSnapshot, query, orderBy } from "firebase/firestore"
 import { db } from "../firebase/firebase.config";
 import { MessagesContext } from "./MessagesContext";
+import useAuth from "../hooks/useAuth";
 
-export default function MessagesProvider({ children}){
+export default function MessagesProvider({ children }){
     const [msgs, setMsgs] = useState([]);
     const [currentChatId, setCurrentChatId] = useState(null); // the current chat
+    const { user } = useAuth();
+
+    // clear messages when user changes
+    useEffect(() => {
+        setMsgs([]);
+        setCurrentChatId(null);
+    }, [user?.uid])
 
     // updating messages
     useEffect(() =>{
         if (!currentChatId){
-            // setMsgs([]); // clear
+            setMsgs([]); // clear
             return;
         }
         // grab messages from chatsRef when a certain condition is met
@@ -30,12 +38,15 @@ export default function MessagesProvider({ children}){
         return () => unsubscribe(); // clean up the useEffect
     }, [currentChatId]);
 
-    const sendMessage = async (text, user, chatId) => {
-        console.log("Current chat ID:", chatId);
-        if (!currentChatId) return; // no chat to send to
+    const sendMessage = async (text, user) => {
+        console.log("sending message");
+        console.log("Current chat ID:", currentChatId);
+        if (!currentChatId){
+            return; // no chat to send to
+        }
         if (text === "") return; // dont' allow empty message
 
-        const messagesRef = collection(db, "chats", chatId, "messages");
+        const messagesRef = collection(db, "chats", currentChatId, "messages");
 
         await addDoc(messagesRef, {
             text,
