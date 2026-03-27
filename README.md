@@ -4,8 +4,11 @@ Izzy Carlson (PM), Landon Chapin, Esperanza Paulino
 ## Individual Contributions
 will be updated here
 
-## System Architecture/Data Flow Diagram
-will be here
+## State Diagram
+<img width="1298" height="720" alt="Screenshot 2026-03-26 201249" src="https://github.com/user-attachments/assets/a43eafce-ea50-40c5-a036-923062f7ff36" />
+
+## UML
+UML here
 
 ## Resources Used
 - https://github.com/FahmidaHamid/mini-project-05-react-router-and-authentication/
