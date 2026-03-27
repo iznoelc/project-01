@@ -20,7 +20,7 @@ https://urgarden.netlify.app/
 We used a Discord group chat to communicate. We sent prototype images, communicated what packages needed to be installed, certain pushes, etc.
 
 ## Individual Contributions
-### Izzy
+### Izzy Carlson
 - Designed and implemented messages page, home page, saved links modal
 - Authentication and related pages
 - State Diagram
