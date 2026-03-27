@@ -31,8 +31,8 @@ export default function Home(){
                         className="max-w-lg rounded-lg"
                         />
                         <div className="p-4">
-                        <h1 className="text-6xl font-bold">Ready to manage your garden?</h1>
-                        <h3 className="text-xl text-neutral font-bold italic">Our Garden lets you manage your tasks as mindlessly as flowers bloom.</h3>
+                        <div className="pb-16"><h1 className="text-6xl font-bold">Ready to manage your garden?</h1></div>
+                        <h3 className="text-xl text-neutral font-bold italic">Your Garden lets you manage your tasks as mindlessly as flowers bloom.</h3>
                         <p className="py-6">
                             Capture, organize, and tackle your to-do list. Add and view weather from locations around the world. Message your close friends to help you stay on track.
                             <br /><br />It's all here in Your Garden! Are <i>you</i> ready to organize <i>your</i> life?
