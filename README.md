@@ -1,20 +1,42 @@
-# Project 01: Custom Task Manager (subject to change)
+# Project 01: Your Garden
 Izzy Carlson (PM), Landon Chapin, Esperanza Paulino
 
-## Individual Contributions
-will be updated here
+## Live Link
+https://urgarden.netlify.app/
 
-- Landon Chapin
-    - Designed and implemented todo list
-- Esperanza Paulino
-    - Designed and implemented Weather Page and Custom Error Page
+## Stack
+- React 19
+- Vite
+- Firebase Authentication and Firestore
+- React Router
+- Tailwind CSS + DaisyUI
+- React Icons
+- React Toastify
+- Cally
+- Ant Design (antd)
+- Copy to Clipboard
+
+## Team Collaboration
+We used a Discord group chat to communicate. We sent prototype images, communicated what packages needed to be installed, certain pushes, etc.
+
+## Individual Contributions
+### Izzy
+- Designed and implemented messages page, home page, saved links modal
+- Authentication and related pages
+- State Diagram
+
+### Landon Chapin
+- Designed and implemented todo list
+- UML
+  
+### Esperanza Paulino
+- Designed and implemented Weather Page and Custom Error Page
 
 ## State Diagram
 <img width="1298" height="720" alt="Screenshot 2026-03-26 201249" src="https://github.com/user-attachments/assets/a43eafce-ea50-40c5-a036-923062f7ff36" />
 
 ## UML - Component Interaction
 <img width="1336" height="672" alt="UML" src="https://github.com/user-attachments/assets/9751e9a1-a4fa-4241-8d14-fc5f2af6f0e2" />
-
 
 ## Resources Used
 - https://github.com/FahmidaHamid/mini-project-05-react-router-and-authentication/
