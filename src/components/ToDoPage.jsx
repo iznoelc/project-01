@@ -51,6 +51,20 @@ function isSameWeek(dateA, dateB) {
 export default function ToDoPage() {
   const { user } = useAuth();
   const calendarRef = useRef();
+
+    //  Holds a String - Task
+    //  Holds a String - Date
+    //              Format - (YYYY-MM-DD-HH)
+    //                              Y = Year
+    //                              M = Month
+    //                              D = Day
+    //                              H = Hour (Between 1-24)
+  const [formData, setFormData] = useState({
+    task: "",
+    date: "", // datetime-local format: "YYYY-MM-DDTHH:MM"
+    selectedDay: ""
+  });
+
   /**
    * Helper function to determine if a UID already has a tasksList associated with it.
    * It searches through the chats and assigns it to existingChat. If this is not null, it returns this id.
@@ -135,18 +149,7 @@ export default function ToDoPage() {
 
 
 
-    //  Holds a String - Task
-    //  Holds a String - Date
-    //              Format - (YYYY-MM-DD-HH)
-    //                              Y = Year
-    //                              M = Month
-    //                              D = Day
-    //                              H = Hour (Between 1-24)
-  const [formData, setFormData] = useState({
-    task: "",
-    date: "", // datetime-local format: "YYYY-MM-DDTHH:MM"
-    selectedDay: ""
-  });
+
 
   const [isWeekly, setIsWeekly] = useState(false);
 
