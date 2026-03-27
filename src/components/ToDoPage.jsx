@@ -247,7 +247,8 @@ return (
           <datalist id="tasks">
             <option value="Take Pills" /> <option value="Do The Dishes" /> <option value="Do The Laundry" /> <option value="Clean The Floors" /> <option value="Dust" /> <option value="Clean The Dishes" />
           </datalist>
-          <input type="datetime-local" className="input" name="date" value={formData.date} onChange={handleChange} />
+          <input type="datetime-local" className="input" name="date" value={formData.date} onChange={handleChange} min="1900-01-01T00:00" max="9999-12-31T23:59"
+            />
           <button type="button" className="btn" onClick={addTask} > Add Task </button>
         </div>
         {/* <div className="grid grid-cols-2 gap-4"> */}
