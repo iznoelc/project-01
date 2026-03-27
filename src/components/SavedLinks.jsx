@@ -3,9 +3,11 @@ import { IoMdClose } from "react-icons/io";
 import { Popconfirm } from 'antd';
 
 import useSavedLinks from "../hooks/useSavedLinks";
+import { useNavigate } from "react-router";
 
 
 export default function SavedLinks() {
+    const navigate = useNavigate();
     const { userLinks, addLink, deleteLink } = useSavedLinks();
 
     const [formData, setFormData] = useState({
@@ -45,7 +47,18 @@ export default function SavedLinks() {
                 {userLinks.length === 0 && <p className="text-pink-400">No saved links!</p>}
                 {userLinks.map((link,index) => (
                     <div key={index} className="flex gap-2">
-                        <li><a href={link.link_url} className="underline"> {link.link_name} </a></li>
+                        <li><a 
+                              href={
+                                link.link_url.startsWith("http")
+                                ? link.link_url
+                                : `https://${link.link_url}`
+                            }
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="underline"
+                            > {link.link_name}
+                        </a>
+                        </li>
                         {/* <p onClick={}>DELETE</p> */}
                         <Popconfirm
                             title="Delete Saved Link"

@@ -267,8 +267,13 @@ return (
         <h1 className="text-3xl fontdiner-swanky-regular">Your Tasks</h1>
         <list>
           <label className="label"> Today <input type="checkbox" className="toggle" checked={isWeekly} onChange={handleWeekly} /> This Week </label>
+          {!formData.selectedDay && (
+            <p className="text-pink-400 pt-20">Select a date to view tasks</p>
+          )}
           <ul className="mt-2"> {tasksList.length === 0 && <p>No tasks yet.</p>}
-          { tasksList.filter(task => { const taskDate = toDateOnly(task.date); const selectedDate = toDateOnly(formData.selectedDay); if (isWeekly) { return isSameWeek(taskDate, selectedDate); } // Daily
+          { tasksList.filter(task => {
+            if (!formData.selectedDay) return;
+            const taskDate = toDateOnly(task.date); const selectedDate = toDateOnly(formData.selectedDay); if (isWeekly) { return isSameWeek(taskDate, selectedDate); } // Daily
           return taskDate.toDateString() === selectedDate.toDateString(); }) .map((t, idx) => ( <li key={idx} className="py-1"> <span className="font-medium">{t.task}</span>{" "} <span className="opacity-70"> — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)} </span>
           <button type="button" className="btn" onClick={() => removeTask(t.id)} > Complete Task </button> </li> ))}
           </ul>

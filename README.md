@@ -31,6 +31,7 @@ We used a Discord group chat to communicate. We sent prototype images, communica
   
 ### Esperanza Paulino
 - Designed and implemented Weather Page and Custom Error Page
+- Footer
 
 ## State Diagram
 <img width="1298" height="720" alt="Screenshot 2026-03-26 201249" src="https://github.com/user-attachments/assets/a43eafce-ea50-40c5-a036-923062f7ff36" />
