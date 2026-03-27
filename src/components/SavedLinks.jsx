@@ -44,7 +44,7 @@ export default function SavedLinks() {
                 <div className="grid grid-cols-3 gap-4 p-4">
                 {userLinks.length === 0 && <p className="text-pink-400">No saved links!</p>}
                 {userLinks.map((link,index) => (
-                    <div key={index} className="flex">
+                    <div key={index} className="flex gap-2">
                         <li><a href={link.link_url} className="underline"> {link.link_name} </a></li>
                         {/* <p onClick={}>DELETE</p> */}
                         <Popconfirm

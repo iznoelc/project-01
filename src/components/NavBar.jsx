@@ -21,7 +21,6 @@ export default function NavBar(){
     const navigate = useNavigate();
     const { user, loggedIn, signOutUser } = useAuth(); // sign up with email and password or with google uses functions from the useAuth custom hook 
 
-    // feel free to change/edit this, just a temp navbar for now
     return (
         <>
             {/* nav bar when the user is logged in */}
@@ -36,9 +35,12 @@ export default function NavBar(){
                     tabIndex="-1"
                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                     {navigation.map((n, index) => (
-                        <li key={index}><a>{n.name}</a></li>
+                    <li key={index}><a onClick={() => navigate(n.link)}>{n.icon} {n.name}</a></li>
                     ))}
+                    <li><a onClick={()=>document.getElementById('links_modal').showModal()}><PiLinkSimpleBold /> Saved Links</a></li>
+                    
                 </ul>
+                <SavedLinks />
                 </div>
                 <span className="text-4xl pl-4 pr-2"><IoFlower /></span>
                 <a className="btn btn-ghost text-3xl fontdiner-swanky-regular" onClick={() => navigate("/", {replace: true})}>Your Garden</a>
@@ -52,7 +54,7 @@ export default function NavBar(){
                 <SavedLinks />
                 </ul>
             </div>
-            <div className="navbar-end">
+            <div className="navbar-end flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4">
                 <a className="text-xl pr-4">Welcome Back, {user.displayName}</a>
                 <button className=" btn btn-primary" onClick={signOutUser}>Log Out</button>
             </div>
