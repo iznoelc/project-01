@@ -10,12 +10,13 @@ import MessagesPage from "../components/MessagesPage";
 import WeatherPage from "../components/WeatherPage";
 import ToDoPage from "../components/ToDoPage";
 import ForgotPasswordPage from "../components/ForgotPasswordPage";
-
+import ErrorPage, { ErrorBoundary } from "../components/ErrorPage";
 
 const MainRouter = [
   {
     path: "/",
     Component: Root,
+    ErrorBoundary: ErrorBoundary,
     children: [
       { index: true,
         Component: Home,
@@ -43,6 +44,7 @@ const MainRouter = [
         ),
        },
       { path: "forgotpassword", Component: ForgotPasswordPage},
+      { path: "error", Component: ErrorPage },
     ],
   },
 ];
