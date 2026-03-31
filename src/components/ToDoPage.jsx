@@ -228,6 +228,25 @@ export default function ToDoPage() {
     );
   };
 
+  function Download(myList){
+    // parse array to text
+    const text = myList
+    .map(task => `${task.task} (${task.date}) \n`) 
+    .join("\n"); 
+
+    // Create Blob 
+    const file = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(file);
+
+    // trigger the download on click
+    const a = document.createElement("a"); a.href = url;
+    a.download = "YourTasks.txt";
+    a.click();
+    URL.revokeObjectURL(url); 
+
+    return;
+}
+
 return (
   <>
     <div className="flex flex-col min-h-screen">
@@ -253,6 +272,7 @@ return (
           <input type="datetime-local" className="input" name="date" value={formData.date} onChange={handleChange} min="1900-01-01T00:00" max="9999-12-31T23:59"
             />
           <button type="button" className="btn" onClick={addTask} > Add Task </button>
+          <button type="button" className="btn" onClick={() => Download(tasksList)}  > save downloads </button>
         </div>
         {/* <div className="grid grid-cols-2 gap-4"> */}
         <div className="flex flex-col gap-2 pt-16 items-center">
@@ -277,6 +297,7 @@ return (
           return taskDate.toDateString() === selectedDate.toDateString(); }) .map((t, idx) => ( <li key={idx} className="py-1"> <span className="font-medium">{t.task}</span>{" "} <span className="opacity-70"> — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)} </span>
           <button type="button" className="btn" onClick={() => removeTask(t.id)} > Complete Task </button> </li> ))}
           </ul>
+          <button type="button" className="btn" onClick={() => Download(tasksList)}  > Download Tasks </button>
         </list>
       </div>
       </div>
