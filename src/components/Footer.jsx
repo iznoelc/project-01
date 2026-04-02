@@ -1,5 +1,6 @@
+import GleebusLogo from "../assets/GleebusLogo.png";
+
 export default function Footer(){
-    // temp footer, feel free to edit/change
     return (
         <>
         <footer className="footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4">
@@ -13,7 +14,7 @@ export default function Footer(){
                 clipRule="evenodd"
                 className="fill-current">
                     <image
-                        href="src/assets/GleebusLogo.png"
+                        href={GleebusLogo}
                         width="24"
                         height="24"
                     />

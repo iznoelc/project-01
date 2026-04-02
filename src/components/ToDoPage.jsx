@@ -51,6 +51,20 @@ function isSameWeek(dateA, dateB) {
 export default function ToDoPage() {
   const { user } = useAuth();
   const calendarRef = useRef();
+
+    //  Holds a String - Task
+    //  Holds a String - Date
+    //              Format - (YYYY-MM-DD-HH)
+    //                              Y = Year
+    //                              M = Month
+    //                              D = Day
+    //                              H = Hour (Between 1-24)
+  const [formData, setFormData] = useState({
+    task: "",
+    date: "", // datetime-local format: "YYYY-MM-DDTHH:MM"
+    selectedDay: ""
+  });
+
   /**
    * Helper function to determine if a UID already has a tasksList associated with it.
    * It searches through the chats and assigns it to existingChat. If this is not null, it returns this id.
@@ -135,18 +149,7 @@ export default function ToDoPage() {
 
 
 
-    //  Holds a String - Task
-    //  Holds a String - Date
-    //              Format - (YYYY-MM-DD-HH)
-    //                              Y = Year
-    //                              M = Month
-    //                              D = Day
-    //                              H = Hour (Between 1-24)
-  const [formData, setFormData] = useState({
-    task: "",
-    date: "", // datetime-local format: "YYYY-MM-DDTHH:MM"
-    selectedDay: ""
-  });
+
 
   const [isWeekly, setIsWeekly] = useState(false);
 
@@ -225,6 +228,25 @@ export default function ToDoPage() {
     );
   };
 
+  function Download(myList){
+    // parse array to text
+    const text = myList
+    .map(task => `${task.task} (${task.date}) \n`) 
+    .join("\n"); 
+
+    // Create Blob 
+    const file = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(file);
+
+    // trigger the download on click
+    const a = document.createElement("a"); a.href = url;
+    a.download = "YourTasks.txt";
+    a.click();
+    URL.revokeObjectURL(url); 
+
+    return;
+}
+
 return (
   <>
     <div className="flex flex-col min-h-screen">
@@ -247,8 +269,10 @@ return (
           <datalist id="tasks">
             <option value="Take Pills" /> <option value="Do The Dishes" /> <option value="Do The Laundry" /> <option value="Clean The Floors" /> <option value="Dust" /> <option value="Clean The Dishes" />
           </datalist>
-          <input type="datetime-local" className="input" name="date" value={formData.date} onChange={handleChange} />
+          <input type="datetime-local" className="input" name="date" value={formData.date} onChange={handleChange} min="1900-01-01T00:00" max="9999-12-31T23:59"
+            />
           <button type="button" className="btn" onClick={addTask} > Add Task </button>
+          <button type="button" className="btn" onClick={() => Download(tasksList)}  > save downloads </button>
         </div>
         {/* <div className="grid grid-cols-2 gap-4"> */}
         <div className="flex flex-col gap-2 pt-16 items-center">
@@ -263,11 +287,17 @@ return (
         <h1 className="text-3xl fontdiner-swanky-regular">Your Tasks</h1>
         <list>
           <label className="label"> Today <input type="checkbox" className="toggle" checked={isWeekly} onChange={handleWeekly} /> This Week </label>
+          {!formData.selectedDay && (
+            <p className="text-pink-400 pt-20">Select a date to view tasks</p>
+          )}
           <ul className="mt-2"> {tasksList.length === 0 && <p>No tasks yet.</p>}
-          { tasksList.filter(task => { const taskDate = toDateOnly(task.date); const selectedDate = toDateOnly(formData.selectedDay); if (isWeekly) { return isSameWeek(taskDate, selectedDate); } // Daily
+          { tasksList.filter(task => {
+            if (!formData.selectedDay) return;
+            const taskDate = toDateOnly(task.date); const selectedDate = toDateOnly(formData.selectedDay); if (isWeekly) { return isSameWeek(taskDate, selectedDate); } // Daily
           return taskDate.toDateString() === selectedDate.toDateString(); }) .map((t, idx) => ( <li key={idx} className="py-1"> <span className="font-medium">{t.task}</span>{" "} <span className="opacity-70"> — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)} </span>
           <button type="button" className="btn" onClick={() => removeTask(t.id)} > Complete Task </button> </li> ))}
           </ul>
+          <button type="button" className="btn" onClick={() => Download(tasksList)}  > Download Tasks </button>
         </list>
       </div>
       </div>

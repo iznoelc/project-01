@@ -22,6 +22,10 @@ export default function ForgotPasswordPage(){
         }));
     };
 
+    /**
+     * Sends a password reset email to the entered email using Firebase when the submit button is clicked.
+     * @param {} event 
+     */
     const handleSubmit = (event) => {
         event.preventDefault(); // prevents page reload
         console.log("Form Submitted:", formData); // logs the data entered into the form
