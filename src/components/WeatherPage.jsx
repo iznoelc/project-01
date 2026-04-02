@@ -4,6 +4,7 @@ import cloud_icon from '../assets/cloud.png'
 import drizzle_icon from '../assets/drizzle.png'
 import rain_icon from '../assets/rain.png'
 import snow_icon from '../assets/snow.png'
+import gradient from '../assets/gradient.jpg'
 
 //do react-select-async-paginate for troubleshooting if something is wrong
 
@@ -73,8 +74,6 @@ export default function WeatherPage() {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}`;
       const response = await fetch(url);
       const data = await response.json();
-
-      const icon = allIcons[data.weather[0].icon] || clear_icon;
 
       const result = {
         humidity: data.main.humidity,
@@ -171,15 +170,27 @@ export default function WeatherPage() {
     {/* Scrollable card grid */}
     <div className="saved-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
         {cards.map((card, index) => (
-        <div key={index} className="weather-card p-4 border rounded-lg shadow">
-            <img src={allIcons[card.icon]} />
-            <h3>{card.location}</h3>
-            <p>{card.temperature}°C</p>
+        <div
+          key={index}
+          className="card w-full shadow relative overflow-hidden 
+                    bg-gradient-to-br from-pink-600 to-pink-900 text-white"
+        >
+          <div className="card-body items-center text-center">
+            <h5 className="card-title">{card.location}</h5>
+            <img src={allIcons[card.icon]} className="w-30 h-30"/>
+            <p className="whitespace-pre">{card.temperature}°C       {(card.temperature*(9/5))+32}°F</p>
             <p>Humidity: {card.humidity}%</p>
             <p>Wind: {card.windSpeed} km/h</p>
-            <button className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl" onClick={() => handleRemoval(card.location)}>Remove Location</button>
-            {console.log("Rendering card:", card)}
+
+            <button
+              className="btn btn-xs sm:btn-sm md:btn-md lg:btn-md xl:btn-lg"
+              onClick={() => handleRemoval(card.location)}
+            >
+              Remove Location
+            </button>
+          </div>
         </div>
+
         ))}
     </div>
 
