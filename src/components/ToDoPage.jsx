@@ -14,7 +14,11 @@ import {
   serverTimestamp,
   where,
   getDocs,
+  updateDoc,
+  arrayUnion
 } from "firebase/firestore";
+
+
 
 function sortTasksList(DataArray){
   let returnArray = [...DataArray];
@@ -89,7 +93,9 @@ export default function ToDoPage() {
 
       // otherwise, create a new chat and then return its id
       const docRef = await addDoc(collection(db, "tasksList"), {
+        ownerUID: UID,
         participants: [UID],
+
         createdAt: serverTimestamp(),
       });
 
@@ -245,10 +251,114 @@ export default function ToDoPage() {
     URL.revokeObjectURL(url); 
 
     return;
-}
+    }
+
+
+    // Handling the shared tasksList
+    const [isShared, setIsShared] = useState(false);
+    const [selectedTasksList, setSelectedTasksList] = useState([])
+    const [sharedTaskLists, setSharedTaskLists] = useState([]);
+
+    const [selectedSharedListId, setSelectedSharedListId] = useState(null);
+    
+    
+    useEffect(() => {
+      if (!user) return;
+
+      const q = query(
+        collection(db, "tasksList"),
+        where("participants", "array-contains", user.uid)
+      );
+
+      return onSnapshot(q, snapshot => {
+        const lists = snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .filter(list => list.ownerUID !== user.uid);
+
+        setSharedTaskLists(lists);
+      });
+    }, [user]);
+
+
+
+    // Sets isShared to whatever the toggle is set to
+    const handleIsShared = (event) => {
+      setIsShared(event.target.checked);
+    };
+
+    // Create/Update sharedTasksList collection
+
+    const [uidToShare, setUIDToShare] = useState("");
+
+    /**
+     * Shares the currently owned tasksList with another user.
+     * @param {string} tasksListId - ID of the tasksList to share
+     * @param {string} shareToUID - UID of the user to share with
+     */
+    async function shareTasksList(tasksListId, shareToUID) {
+      if (!user?.uid) {
+        errorNotify("You must be logged in to share a task list.");
+        return;
+      }
+
+      if (!tasksListId || !shareToUID) {
+        errorNotify("Invalid share parameters.");
+        return;
+      }
+      if (user.uid == shareToUID){
+        errorNotify("You cannot share a list to yourself")
+        return;
+      }
+
+      try {
+        const tasksListRef = doc(db, "tasksList", tasksListId);
+
+        // Add UID only if it doesn't already exist
+        await updateDoc(tasksListRef, {
+          participants: arrayUnion(shareToUID),
+        });
+
+      } catch (err) {
+        console.error("Share failed:", err);
+        errorNotify("Unable to share the task list.");
+      }
+    }
+
+    // Sets the shared tasksList List
+    useEffect(() => {
+      if (!user) return;
+
+      const q = query(
+        collection(db, "tasksList"),
+        where("participants", "array-contains", user.uid)
+      );
+
+      return onSnapshot(q, snapshot => {
+        const lists = snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          // filter OUT your personal list
+          .filter(list => list.id !== tasksListId);
+
+        setSharedTaskLists(lists);
+      });
+    }, [user, tasksListId]);
+
+    
+    useEffect(() => {
+      if (sharedTaskLists.length > 0 && !selectedSharedListId) {
+        setSelectedSharedListId(sharedTaskLists[0].id);
+      }
+    }, [sharedTaskLists, selectedSharedListId]);
+
+
+    const [sharedListInput, setSharedListInput] = useState("");
+
+    
 
 return (
   <>
+  <label className="label"> My To-Do List <input type="checkbox" className="toggle" checked={isShared} onChange={handleIsShared} /> To-Do Lists Shared With Me </label>
+  {!isShared && (
     <div className="flex flex-col min-h-screen">
       <div className="flex w-full p-4 justify-center bg-base-200">
         <h1 className="text-5xl">Your To-Do List</h1>
@@ -272,7 +382,6 @@ return (
           <input type="datetime-local" className="input" name="date" value={formData.date} onChange={handleChange} min="1900-01-01T00:00" max="9999-12-31T23:59"
             />
           <button type="button" className="btn" onClick={addTask} > Add Task </button>
-          <button type="button" className="btn" onClick={() => Download(tasksList)}  > save downloads </button>
         </div>
         {/* <div className="grid grid-cols-2 gap-4"> */}
         <div className="flex flex-col gap-2 pt-16 items-center">
@@ -298,10 +407,87 @@ return (
           <button type="button" className="btn" onClick={() => removeTask(t.id)} > Complete Task </button> </li> ))}
           </ul>
           <button type="button" className="btn" onClick={() => Download(tasksList)}  > Download Tasks </button>
+          <input type="text" placeholder="UID To Share To" className="input" value={uidToShare} onChange={(e) => setUIDToShare(e.target.value)}/>
+          <button type="button" className="btn" onClick={() => shareTasksList(tasksListId, uidToShare)}  > Share Tasks </button>
         </list>
       </div>
       </div>
       </div>
+        )
+      }
+      {isShared &&(
+        <div className="flex flex-col min-h-screen">
+      <div className="flex w-full p-4 justify-center bg-base-200">
+        <h1 className="text-5xl">To-Do List Shared With You</h1>
+      </div>
+    <div className="flex flex-1 w-full items-stretch">
+      <div className="flex flex-col items-center w-1/2 p-4 gap-10">
+      <h1 className="text-3xl fontdiner-swanky-regular">Choose The To-Do List To Spectate</h1>
+      <input
+        type="text"
+        className="input w-lg"
+        placeholder="Enter Shared List ID"
+        list="sharedTasksListID"
+        value={sharedListInput}
+        onChange={(e) => setSharedListInput(e.target.value)}
+      />
+        <div className="flex">
+        <datalist id="sharedTasksListID">
+          {sharedTaskLists.map(list => (
+            <option key={list.id} value={list.id} />
+          ))}
+        </datalist>
+
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              const exists = sharedTaskLists.some(
+                list => list.id === sharedListInput
+              );
+
+              if (!exists) {
+                errorNotify("That shared task list does not exist.");
+                return;
+              }
+
+              setSelectedSharedListId(sharedListInput);
+            }}
+          >
+            Choose
+          </button>
+
+        </div>
+        {/* <div className="grid grid-cols-2 gap-4"> */}
+        <div className="flex flex-col gap-2 pt-16 items-center">
+          <h2 className="text-neutral text-2xl">Pick a Day to Display the Tasks Of:</h2>
+          <calendar-date className="cally bg-base-100 border border-base-300 shadow-lg rounded-box" name="selectedDay" ref={calendarRef} value={formData.selectedDay} >
+            <svg aria-label="Previous" className="fill-current size-4" slot="previous" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path></svg>
+            <svg aria-label="Next" className="fill-current size-4" slot="next" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>
+            <calendar-month></calendar-month> </calendar-date>
+        </div>
+      </div>
+      <div className="flex flex-col w-1/2 items-center bg-base-300 p-4">
+        <h1 className="text-3xl fontdiner-swanky-regular">Thier Tasks</h1>
+        <list>
+          <label className="label"> Today <input type="checkbox" className="toggle" checked={isWeekly} onChange={handleWeekly} /> This Week </label>
+          {!formData.selectedDay && (
+            <p className="text-pink-400 pt-20">Select a date to view tasks</p>
+          )}
+          <ul className="mt-2"> {selectedTasksList.length === 0 && <p>No tasks yet.</p>}
+          { selectedTasksList.filter(task => {
+            if (!formData.selectedDay) return;
+            const taskDate = toDateOnly(task.date); const selectedDate = toDateOnly(formData.selectedDay); if (isWeekly) { return isSameWeek(taskDate, selectedDate); } // Daily
+          return taskDate.toDateString() === selectedDate.toDateString(); }) .map((t, idx) => ( <li key={idx} className="py-1"> <span className="font-medium">{t.task}</span>{" "} <span className="opacity-70"> — {new Date(t.date).toLocaleString().slice(0, -6) + new Date(t.date).toLocaleString().slice(-3)} </span>
+           </li> ))}
+          </ul>
+          <button type="button" className="btn" onClick={() => Download(selectedTasksList)}  > Download Tasks </button>
+        </list>
+      </div>
+      </div>
+      </div>
+      )
+      }
       </>
       );
     }
