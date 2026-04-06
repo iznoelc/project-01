@@ -468,7 +468,7 @@ return (
         </div>
       </div>
       <div className="flex flex-col w-1/2 items-center bg-base-300 p-4">
-        <h1 className="text-3xl fontdiner-swanky-regular">Thier Tasks</h1>
+        <h1 className="text-3xl fontdiner-swanky-regular">Their Tasks</h1>
         <list>
           <label className="label"> Today <input type="checkbox" className="toggle" checked={isWeekly} onChange={handleWeekly} /> This Week </label>
           {!formData.selectedDay && (
